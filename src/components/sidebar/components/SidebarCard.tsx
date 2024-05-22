@@ -27,7 +27,7 @@ const FreeCard = () => {
       </div>
 
       <div className="mt-16 flex h-fit flex-col items-center">
-        <p className="text-lg font-bold text-white">Upgrade to PRO</p>
+        <p className="text-lg font-bold text-white">a2zexpert's Tech Solutions</p>
         <p className="mt-1 px-4 text-center text-sm text-white">
           Improve your development process and start doing more with Horizon UI
           PRO!
@@ -36,9 +36,9 @@ const FreeCard = () => {
         <a
           target="blank"
           className="text-medium mt-7 block rounded-full bg-gradient-to-b from-white/50 to-white/10 px-11 py-[12px] text-center text-base text-white hover:bg-gradient-to-b hover:from-white/40 hover:to-white/5 "
-          href="https://horizon-ui.com/pro?ref=live-free-tailwind-react"
+          href="https://a2zExpert.com"
         >
-          Upgrade to PRO
+          Need a Help?
         </a>
       </div>
     </div>

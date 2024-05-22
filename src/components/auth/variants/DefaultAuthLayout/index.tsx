@@ -30,8 +30,9 @@ function Default(props: { maincard: JSX.Element }) {
               // style={{ backgroundImage: authImg ? `url(${authImg})` : '' }}
               className={`absolute flex h-full w-full items-end justify-center bg-gradient-to-br from-brand-400 to-brand-600 bg-cover bg-center lg:rounded-bl-[120px] xl:rounded-bl-[200px]`}
             >
+              
               <div className="relative flex h-full w-full">
-                <div
+                <div // sidebar background image
                   style={{ backgroundImage: `url(${authImg.src})` }}
                   className="flex h-full w-full bg-cover"
                 />
