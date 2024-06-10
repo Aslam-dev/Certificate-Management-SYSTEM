@@ -1,21 +1,24 @@
 'use client';
 import React, { ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 import 'styles/App.css';
 import 'styles/Contact.css';
-// import '@asseinfo/react-kanban/dist/styles.css';
-// import 'styles/Plugins.css';
 import 'styles/MiniCalendar.css';
 import 'styles/index.css';
 
-import dynamic from 'next/dynamic';
+// Define the NoSSR component
+const NoSSR: React.FC<{ children: ReactNode }> = ({ children }) => <>{children}</>;
 
-const _NoSSR = ({ children }) => <React.Fragment>{children}</React.Fragment>;
+// Dynamically import NoSSR with SSR disabled
+const DynamicNoSSR = dynamic(() => Promise.resolve(NoSSR), { ssr: false });
 
-const NoSSR = dynamic(() => Promise.resolve(_NoSSR), {
-  ssr: false,
-});
-
-export default function AppWrappers({ children }: { children: ReactNode }) {
-  // @ts-expect-error
-  return <NoSSR>{children}</NoSSR>;
+// AppWrappers component
+interface AppWrappersProps {
+  children: ReactNode;
 }
+
+const AppWrappers: React.FC<AppWrappersProps> = ({ children }) => {
+  return <DynamicNoSSR>{children}</DynamicNoSSR>;
+};
+
+export default AppWrappers;
