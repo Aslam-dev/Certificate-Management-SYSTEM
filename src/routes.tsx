@@ -1,3 +1,4 @@
+import { signOut } from 'next-auth/react';
 import React from 'react';
 
 // Admin Imports
@@ -38,10 +39,11 @@ const routes = [
     icon: <MdPerson className="h-6 w-6" />,
   },
   {
-    name: 'Sign In',
+    name: 'Sign Out',
     layout: '/auth',
-    path: 'log-in',
+    path: 'sign-in',
     icon: <MdLock className="h-6 w-6" />,
+    onClick: () => signOut({ callbackUrl: '/' })
   },
 
 ];

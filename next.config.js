@@ -25,4 +25,7 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = {
+  // Other Next.js configuration options
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx'],
+};
