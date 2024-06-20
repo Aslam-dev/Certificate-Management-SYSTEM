@@ -5,18 +5,18 @@ import InputField from 'components/fields/InputField';
 import FooterAuthDefault from 'components/footer/FooterAuthDefault';
 
 export default function Home() {
-  const [studentCode, setStudentCode] = useState('');
+  const [code, setCode] = useState('');
   const [studentData, setStudentData] = useState(null);
   const [error, setError] = useState('');
 
   const handleInputChange = (e) => {
-    setStudentCode(e.target.value);
+    setCode(e.target.value);
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/student?studentCode=${studentCode}`);
+      const response = await fetch(`/api/student?code=${code}`);
 
       if (!response.ok) {
         throw new Error('Student not found');
@@ -45,11 +45,11 @@ export default function Home() {
                 <InputField
                   variant="auth"
                   extra="mb-3"
-                  label="Insert Student NIC Number"
-                  placeholder="Only Number Don't Put Any Letters"
-                  id="studentCode"
+                  label="Insert Student NIC Number or Certificate ID"
+                  placeholder="Enter the code"
+                  id="code"
                   type="text"
-                  value={studentCode}
+                  value={code}
                   onChange={handleInputChange}
                 />
                 <button

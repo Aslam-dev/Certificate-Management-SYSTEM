@@ -5,17 +5,19 @@ const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
-    const { studentCode } = req.query;
+    const { code } = req.query;
 
-    // Validate studentCode
-    if (!studentCode || typeof studentCode !== 'string') {
-      return res.status(400).json({ error: 'Invalid student code' });
+    if (!code || typeof code !== 'string') {
+      return res.status(400).json({ error: 'Invalid code' });
     }
 
     try {
       const student = await prisma.student.findFirst({
         where: {
-          studentCode: studentCode.toString(),
+          OR: [
+            { studentCode: code },
+            { certificateId: code },
+          ],
         },
       });
 
@@ -33,4 +35,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
-
