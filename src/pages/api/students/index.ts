@@ -6,7 +6,6 @@ import multer from 'multer';
 
 const prisma = new PrismaClient();
 
-// Set up multer for file uploads
 const upload = multer({
   storage: multer.diskStorage({
     destination: './public/uploads',
@@ -16,14 +15,13 @@ const upload = multer({
   }),
 });
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const studentId = req.query.id; // Assuming your API route is /api/students/[id]
+const uploadMiddleware = upload.single('photo');
 
-  if (req.method === 'POST' || req.method === 'PUT') {
-    // Middleware for handling multipart form data
-    upload.single('photo')(req, res, async (error: any) => {
-      if (error) {
-        console.error('Multer error:', error);
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method === 'POST') {
+    uploadMiddleware(req, res, async (err) => {
+      if (err) {
+        console.error('Multer error:', err);
         res.status(500).json({ error: 'File upload failed' });
         return;
       }
@@ -38,49 +36,26 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         results,
         graduationYear,
       } = req.body;
-
       const photo = req.file ? `/uploads/${req.file.filename}` : null;
 
       try {
-        let student;
-
-        if (req.method === 'POST') {
-          // Create a new student
-          student = await prisma.student.create({
-            data: {
-              firstName,
-              lastName,
-              nationality,
-              studentCode,
-              certificateId,
-              course,
-              results,
-              graduationYear: parseInt(graduationYear, 10), // Convert to integer
-              photo,
-            },
-          });
-        } else if (req.method === 'PUT') {
-          // Update an existing student
-          student = await prisma.student.update({
-            where: { id: Number(studentId) },
-            data: {
-              firstName,
-              lastName,
-              nationality,
-              studentCode,
-              certificateId,
-              course,
-              results,
-              graduationYear: parseInt(graduationYear, 10), // Convert to integer
-              photo,
-            },
-          });
-        }
-
-        res.status(200).json(student);
+        const student = await prisma.student.create({
+          data: {
+            firstName,
+            lastName,
+            nationality,
+            studentCode,
+            certificateId,
+            course,
+            results,
+            graduationYear: parseInt(graduationYear, 10), // Ensure graduationYear is an integer
+            photo,
+          },
+        });
+        res.status(201).json(student);
       } catch (error) {
-        console.error(`Error ${req.method === 'POST' ? 'creating' : 'updating'} student:`, error);
-        res.status(500).json({ error: `Failed to ${req.method === 'POST' ? 'create' : 'update'} student` });
+        console.error('Error creating student:', error);
+        res.status(500).json({ error: 'Failed to create student' });
       }
     });
   } else if (req.method === 'GET') {
@@ -92,15 +67,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(500).json({ error: 'Failed to fetch students' });
     }
   } else {
-    res.setHeader('Allow', ['GET', 'POST', 'PUT']);
+    res.setHeader('Allow', ['GET', 'POST']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 };
-
-export default handler;
 
 export const config = {
   api: {
     bodyParser: false, // Disable Next.js body parsing to allow multer to handle it
   },
 };
+
+
+
+export default handler;

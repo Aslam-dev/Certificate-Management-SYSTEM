@@ -16,7 +16,7 @@ generator client {
 }
 
 model Student {
-  id              Int     @id @default(autoincrement())
+ id         BigInt    @id @default(autoincrement())
   photo           String?
   firstName       String
   lastName        String
