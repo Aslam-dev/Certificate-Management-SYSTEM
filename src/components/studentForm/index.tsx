@@ -1,3 +1,6 @@
+
+
+
 import { useState } from 'react';
 
 interface Course {
@@ -56,31 +59,56 @@ const StudentForm: React.FC<Props> = ({ onSubmit, courses, subjects }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="First Name"
-        value={firstName}
-        onChange={(e) => setFirstName(e.target.value)}
-      />
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div>
+        <label>
+          First Name
+          <input
+            type="text"
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc' }}
+          />
+        </label>
+      </div>
+
+      <div>
+      <label> Last Name
       <input
         type="text"
         placeholder="Last Name"
         value={lastName}
         onChange={(e) => setLastName(e.target.value)}
+        style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc' }}
       />
+      </label>
+      </div>
+
+      <div>
+      <label>NIC
       <input
         type="text"
         placeholder="NIC"
         value={nic}
         onChange={(e) => setNic(e.target.value)}
-      />
+        style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc' }}
+        />
+      </label>
+      </div>
+
+      <div>
+      <label>Photo URL
       <input
         type="text"
         placeholder="Photo URL"
         value={photo}
         onChange={(e) => setPhoto(e.target.value)}
-      />
+        style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc' }}
+        />
+      </label>
+      </div>
+
       {courses ? (
         <select value="" onChange={handleCourseChange}>
           <option value="">Select Course</option>
@@ -108,7 +136,11 @@ const StudentForm: React.FC<Props> = ({ onSubmit, courses, subjects }) => {
           ))}
         </div>
       ))}
-      <button type="submit">Submit</button>
+      <div>
+      <button type="submit" 
+      style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc', backgroundColor:'Blue' }}
+      >Submit</button>
+      </div>
     </form>
   );
 };
