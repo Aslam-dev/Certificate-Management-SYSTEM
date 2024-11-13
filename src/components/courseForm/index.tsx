@@ -42,7 +42,7 @@ const CourseForm: React.FC<Props> = ({ onSubmit }) => {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         
         <div>
-        <label>
+        <label style={{ color: '#D2B48C' }}>
           Course Name
           <input
             type="text"
@@ -54,32 +54,31 @@ const CourseForm: React.FC<Props> = ({ onSubmit }) => {
         </label>
         </div>
         <div>
-        <label>
-        Start Date
+        <label style={{ color: '#D2B48C' }}> Start Date</label>  
         <input
           type="datetime-local"
           placeholder="Start Date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
-          style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc' }}
+          style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc', color:'lightGray' }}
           />
-        </label>
+        
         </div>
 
         <div>
-        <label> End Date
+        <label style={{ color: '#D2B48C' }}> End Date</label>
         <input
           type="datetime-local"
           placeholder="End Date"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
-          style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc' }}
+          style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc', color:'lightGray' }}
           />
-        </label>
+        
         </div>
 
         <div>
-        <label>Batch No
+        <label style={{ color: '#D2B48C' }}>Batch No
         <input
           type="text"
           placeholder="Batch No"
