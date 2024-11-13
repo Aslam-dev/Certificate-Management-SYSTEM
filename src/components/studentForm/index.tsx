@@ -61,7 +61,7 @@ const StudentForm: React.FC<Props> = ({ onSubmit, courses, subjects }) => {
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <div>
-        <label>
+        <label style={{ color: '#D2B48C' }}>
           First Name
           <input
             type="text"
@@ -74,7 +74,7 @@ const StudentForm: React.FC<Props> = ({ onSubmit, courses, subjects }) => {
       </div>
 
       <div>
-      <label> Last Name
+      <label style={{ color: '#D2B48C' }}> Last Name
       <input
         type="text"
         placeholder="Last Name"
@@ -86,7 +86,7 @@ const StudentForm: React.FC<Props> = ({ onSubmit, courses, subjects }) => {
       </div>
 
       <div>
-      <label>NIC
+      <label style={{ color: '#D2B48C' }}>NIC
       <input
         type="text"
         placeholder="NIC"
@@ -97,7 +97,7 @@ const StudentForm: React.FC<Props> = ({ onSubmit, courses, subjects }) => {
       </label>
       </div>
 
-      <div>
+      <div style={{ color: '#D2B48C' }} >
       <label>Photo URL
       <input
         type="text"
@@ -119,7 +119,7 @@ const StudentForm: React.FC<Props> = ({ onSubmit, courses, subjects }) => {
           ))}
         </select>
       ) : (
-        <p>Loading courses...</p>
+        <p style={{color:'#D2B48C'}}>Loading courses...</p>
       )}
       {selectedCourses.map((courseId) => (
         <div key={courseId}>
