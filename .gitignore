@@ -1,5 +1,11 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Ignore pnpm lock file
+pnpm-lock.yaml
+
+# Ignore pnpm store (used for caching, typically outside the project folder)
+.pnpm-debug.log
+
 # dependencies
 node_modules
 /node_modules
