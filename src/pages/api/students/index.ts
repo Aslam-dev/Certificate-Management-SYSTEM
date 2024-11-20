@@ -1,11 +1,10 @@
-// src/pages/api/students/index.ts
-
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import multer from 'multer';
 
 const prisma = new PrismaClient();
 
+// Configure multer for file storage
 const upload = multer({
   storage: multer.diskStorage({
     destination: './public/uploads',
@@ -36,9 +35,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         results,
         graduationYear,
       } = req.body;
+
+      // Save photo URL if available
       const photo = req.file ? `/uploads/${req.file.filename}` : null;
 
       try {
+        // Create student
         const student = await prisma.student.create({
           data: {
             firstName,
@@ -48,27 +50,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             certificateId,
             course,
             results,
-            graduationYear: parseInt(graduationYear, 10), // Ensure graduationYear is an integer
+            graduationYear: parseInt(graduationYear, 10),
             photo,
           },
         });
+
         res.status(201).json(student);
       } catch (error) {
         console.error('Error creating student:', error);
         res.status(500).json({ error: 'Failed to create student' });
       }
     });
-  } else if (req.method === 'GET') {
-    try {
-      const students = await prisma.student.findMany();
-      res.status(200).json(students);
-    } catch (error) {
-      console.error('Error fetching students:', error);
-      res.status(500).json({ error: 'Failed to fetch students' });
-    }
   } else {
-    res.setHeader('Allow', ['GET', 'POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    res.status(405).json({ message: 'Method Not Allowed' });
   }
 };
 
@@ -77,7 +71,5 @@ export const config = {
     bodyParser: false, // Disable Next.js body parsing to allow multer to handle it
   },
 };
-
-
 
 export default handler;
