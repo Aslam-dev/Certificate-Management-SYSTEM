@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Banner from 'components/admin/profile/Banner';
 import General from 'components/admin/profile/General';
 import Notification from 'components/admin/profile/Notification';
@@ -10,10 +10,66 @@ import StudentForm from 'components/studentForm';
 import CourseForm from 'components/courseForm';
 
 const CreateCoursePage: React.FC = () => {
-  const handleCreateCourse = (courseData: any) => {
-    // Implement the logic to handle course creation
-    console.log('Creating course:', courseData);
-    // You can add API calls or any other logic here to create the course
+  const [courses, setCourses] = useState<any[]>([]);
+  const [subjects, setSubjects] = useState<any[]>([]);
+
+  const handleCreateCourse = async (courseData: any) => {
+    try {
+      const response = await fetch('/api/createCourse', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(courseData),
+      });
+
+      const data = await response.json();
+
+      console.log('API Response:', data); // Log the API response for debugging
+
+      if (response.ok) {
+        // Course created successfully
+        console.log('Course created:', data.course);
+        // Optionally, show a success message here
+      } else {
+        // Handle error
+        console.error(
+          'Error creating course:',
+          data.message || 'Unknown error',
+        );
+        // Optionally show an error message to the user
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle network or unexpected errors
+    }
+  };
+
+  const handleCreateStudent = async (studentData: any) => {
+    try {
+      const response = await fetch('/api/createStudent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(studentData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Student created successfully
+        console.log('Student created:', data.student);
+        // You can show a success message here
+      } else {
+        // Handle error
+        console.error('Error creating student:', data.message);
+        // Optionally show an error message to the user
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle network or unexpected errors
+    }
   };
 
   return (
@@ -40,7 +96,11 @@ const CreateCoursePage: React.FC = () => {
           <Notification />
         </div>
         <div className="col-span-5 lg:col-span-6">
-          <StudentForm />
+          <StudentForm
+            onSubmit={handleCreateStudent}
+            courses={courses}
+            subjects={subjects}
+          />
         </div>
         <div className="col-span-5 lg:col-span-6">
           <CourseForm onSubmit={handleCreateCourse} />
@@ -51,4 +111,3 @@ const CreateCoursePage: React.FC = () => {
 };
 
 export default CreateCoursePage;
-

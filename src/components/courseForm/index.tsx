@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 
 interface Props {
@@ -37,62 +35,72 @@ const CourseForm: React.FC<Props> = ({ onSubmit }) => {
   };
 
   return (
-    <div>
-      {alertMessage && <div className="alert">{alertMessage}</div>}
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        
+    <div className="max-w-auto mx-auto p-4">
+      {alertMessage && (
+        <div className="bg-green-200 text-green-800 p-2 rounded mb-4">
+          {alertMessage}
+        </div>
+      )}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-        <label style={{ color: '#D2B48C' }}>
-          Course Name
+          <label className="block text-black dark:text-white text-sm font-medium">
+            Course Name
+          </label>
           <input
             type="text"
             placeholder="Course Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc' }}
-            />
-        </label>
-        </div>
-        <div>
-        <label style={{ color: '#D2B48C' }}> Start Date</label>  
-        <input
-          type="datetime-local"
-          placeholder="Start Date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc', color:'lightGray' }}
+            className="w-full p-2 rounded-md border border-gray-300 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-800  focus:ring-2 focus:ring-blue-500"
           />
-        
         </div>
 
         <div>
-        <label style={{ color: '#D2B48C' }}> End Date</label>
-        <input
-          type="datetime-local"
-          placeholder="End Date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc', color:'lightGray' }}
+          <label className="block text-black dark:text-white text-sm font-medium">
+            Start Date
+          </label>
+          <input
+            type="datetime-local"
+            placeholder="Start Date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="w-full p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-white bg-white dark:bg-gray-800 "
           />
-        
         </div>
 
         <div>
-        <label style={{ color: '#D2B48C' }}>Batch No
-        <input
-          type="text"
-          placeholder="Batch No"
-          value={batchNo}
-          onChange={(e) => setBatchNo(e.target.value)}
-          style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc' }}
+          <label className="block text-black dark:text-white text-sm font-medium">
+            End Date
+          </label>
+          <input
+            type="datetime-local"
+            placeholder="End Date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="w-full p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black dark:text-white bg-white dark:bg-gray-800 "
           />
-        </label>
         </div>
 
         <div>
-        <button type="submit"
-        style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc', backgroundColor:'Blue' }}
-        >Create Course</button>
+          <label className="block text-black dark:text-white text-sm font-medium">
+            Batch No
+          </label>
+          <input
+            type="text"
+            placeholder="Batch No"
+            value={batchNo}
+            onChange={(e) => setBatchNo(e.target.value)}
+            className="w-full p-2 rounded-md border border-gray-300 text-black dark:text-white bg-white dark:bg-gray-800  focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            className="w-full p-2 rounded-md bg-blue-500 text-gray-600 dark:text-white font-semibold hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Create Course
+          </button>
         </div>
       </form>
     </div>
