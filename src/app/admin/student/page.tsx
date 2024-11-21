@@ -4,8 +4,7 @@ import React from 'react';
 import AddStudents from 'components/addStudentA';
 import AddStudent from 'components/addStudent';
 
-
-const CreateCoursePage: React.FC = () => {
+const CreateStudentPage: React.FC = () => {
   const handleCreateCourse = (courseData: any) => {
     // Implement the logic to handle course creation
     console.log('Creating course:', courseData);
@@ -14,17 +13,14 @@ const CreateCoursePage: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-5 lg:gap-5">
-     
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
         <div className="col-span-5 lg:col-span-12">
           <AddStudents />
           <AddStudent />
         </div>
-        
       </div>
     </div>
   );
 };
 
-export default CreateCoursePage;
-
+export default CreateStudentPage;
