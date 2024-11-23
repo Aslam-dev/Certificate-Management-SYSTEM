@@ -1,5 +1,3 @@
-// src/components/addStudent.tsx
-
 import React, { useState } from 'react';
 
 const AddStudents = () => {
@@ -38,7 +36,7 @@ const AddStudents = () => {
     formData.append('certificateId', certificateId);
     formData.append('course', course);
     formData.append('results', results);
-    formData.append('graduationYear', graduationYear.toString()); // Convert to string for form data
+    formData.append('graduationYear', graduationYear.toString());
     formData.append('photo', photo);
 
     try {
@@ -53,7 +51,7 @@ const AddStudents = () => {
 
       const newStudent = await res.json();
       console.log('Student created successfully:', newStudent);
-      // Reset form fields
+
       setFirstName('');
       setLastName('');
       setNationality('');
@@ -69,170 +67,127 @@ const AddStudents = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop:'1rem' }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-        <div style={{ flex: 1, minWidth: 'calc(50% - 0.5rem)' }}>
-          <label style={{ color: '#D2B48C' }}>First Name
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="First Name"
-              required
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '10px',
-                border: '1px solid #ccc',
-                transition: 'border-color 0.3s, box-shadow 0.3s'
-              }}
-              className="animated-input"
-            />
-          </label>
-          <label style={{ color: '#D2B48C' }}>Nationality
-            <input
-              type="text"
-              value={nationality}
-              onChange={(e) => setNationality(e.target.value)}
-              placeholder="Nationality"
-              required
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '10px',
-                border: '1px solid #ccc',
-                transition: 'border-color 0.3s, box-shadow 0.3s'
-              }}
-              className="animated-input"
-            />
-          </label>
-          <label style={{ color: '#D2B48C' }}>Certificate ID
-            <input
-              type="text"
-              value={certificateId}
-              onChange={(e) => setCertificateId(e.target.value)}
-              placeholder="Certificate ID"
-              required
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '10px',
-                border: '1px solid #ccc',
-                transition: 'border-color 0.3s, box-shadow 0.3s'
-              }}
-              className="animated-input"
-            />
-          </label>
-          <label style={{ color: '#D2B48C' }}>Results
-            <input
-              type="text"
-              value={results}
-              onChange={(e) => setResults(e.target.value)}
-              placeholder="Results"
-              required
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '10px',
-                border: '1px solid #ccc',
-                transition: 'border-color 0.3s, box-shadow 0.3s'
-              }}
-              className="animated-input"
-            />
-          </label>
+    <div>
+      <h1 className="text-4xl font-bold text-center text-gray-800 dark:text-white mb-8">
+        Student Registration
+      </h1>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
+        <div className="flex flex-wrap gap-4">
+          <div className="flex-1 min-w-[calc(50%-0.5rem)]">
+            <label className="text-tan  dark:text-white">
+              First Name
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Enter The First Name"
+                required
+                className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+              />
+            </label>
+            <label className="text-tan  dark:text-white">
+              Nationality
+              <input
+                type="text"
+                value={nationality}
+                onChange={(e) => setNationality(e.target.value)}
+                placeholder="Enter The NIC No"
+                required
+                className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+              />
+            </label>
+            <label className="text-tan  dark:text-white">
+              Certificate ID
+              <input
+                type="text"
+                value={certificateId}
+                onChange={(e) => setCertificateId(e.target.value)}
+                placeholder="Enter The Certificate ID"
+                required
+                className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+              />
+            </label>
+            <label className="text-tan  dark:text-white">
+              Results
+              <input
+                type="text"
+                value={results}
+                onChange={(e) => setResults(e.target.value)}
+                placeholder="Enter The Results"
+                required
+                className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+              />
+            </label>
+          </div>
+          <div className="flex-1 min-w-[calc(50%-0.5rem)]">
+            <label className="text-tan  dark:text-white">
+              Last Name
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Last Name"
+                required
+                className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+              />
+            </label>
+            <label className="text-tan  dark:text-white">
+              Student Code
+              <input
+                type="text"
+                value={studentCode}
+                onChange={(e) => setStudentCode(e.target.value)}
+                placeholder="Enter The Student Code"
+                required
+                className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+              />
+            </label>
+            <label className="text-tan  dark:text-white">
+              Course
+              <input
+                type="text"
+                value={course}
+                onChange={(e) => setCourse(e.target.value)}
+                placeholder="Enter The Course"
+                required
+                className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+              />
+            </label>
+            <label className="text-tan  dark:text-white">
+              Graduation Year
+              <input
+                type="number"
+                value={graduationYear}
+                onChange={(e) => setGraduationYear(parseInt(e.target.value))}
+                placeholder="Enter The Graduation Year"
+                required
+                className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+              />
+            </label>
+          </div>
         </div>
-        <div style={{ flex: 1, minWidth: 'calc(50% - 0.5rem)' }}>
-          <label style={{ color: '#D2B48C' }}>Last Name
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Last Name"
-              required
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '10px',
-                border: '1px solid #ccc',
-                transition: 'border-color 0.3s, box-shadow 0.3s'
-              }}
-              className="animated-input"
-            />
-          </label>
-          <label style={{ color: '#D2B48C' }}>Student Code
-            <input
-              type="text"
-              value={studentCode}
-              onChange={(e) => setStudentCode(e.target.value)}
-              placeholder="Student Code"
-              required
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '10px',
-                border: '1px solid #ccc',
-                transition: 'border-color 0.3s, box-shadow 0.3s'
-              }}
-              className="animated-input"
-            />
-          </label>
-          <label style={{ color: '#D2B48C' }}>Course
-            <input
-              type="text"
-              value={course}
-              onChange={(e) => setCourse(e.target.value)}
-              placeholder="Course"
-              required
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '10px',
-                border: '1px solid #ccc',
-                transition: 'border-color 0.3s, box-shadow 0.3s'
-              }}
-              className="animated-input"
-            />
-          </label>
-          <label style={{ color: '#D2B48C' }}>Graduation Year
-            <input
-              type="number"
-              value={graduationYear}
-              onChange={(e) => setGraduationYear(parseInt(e.target.value))}
-              placeholder="Graduation Year"
-              required
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '10px',
-                border: '1px solid #ccc',
-                transition: 'border-color 0.3s, box-shadow 0.3s'
-              }}
-              className="animated-input"
-            />
-          </label>
+        <label className="text-tan dark:text-white">
+          Photo
+          <input
+            type="file"
+            onChange={(e) =>
+              setPhoto(e.target.files ? e.target.files[0] : null)
+            }
+            required
+            className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+          />
+        </label>
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="w-1/4 p-2 rounded-lg border border-gray-300 bg-blue-500 text-white hover:bg-blue-600 transition"
+          >
+            Add Student
+          </button>
         </div>
-      </div>
-      <label style={{ color: '#D2B48C' }}>Photo
-        <input
-          type="file"
-          onChange={(e) => setPhoto(e.target.files ? e.target.files[0] : null)}
-          required
-          style={{
-            width: '100%',
-            padding: '0.5rem',
-            borderRadius: '10px',
-            border: '1px solid #ccc',
-            transition: 'border-color 0.3s, box-shadow 0.3s'
-          }}
-          className="animated-input"
-        />
-      </label>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <button type="submit" style={{ width: '25%', padding: '0.5rem', borderRadius: '10px', border: '1px solid #ccc', backgroundColor: 'blue', color: 'white' }}>
-          Add Student
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 };
 

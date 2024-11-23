@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 
-import AddStudents from 'components/addStudentA';
-import AddStudent from 'components/addStudent';
+import AddStudent from 'components/addStudentA';
+import AddStudents from 'components/addStudent';
 
 const CreateStudentPage: React.FC = () => {
   const handleCreateCourse = (courseData: any) => {
@@ -15,8 +15,8 @@ const CreateStudentPage: React.FC = () => {
     <div className="flex flex-col gap-5 lg:gap-5">
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
         <div className="col-span-5 lg:col-span-12">
-          <AddStudents />
           <AddStudent />
+          <AddStudents />
         </div>
       </div>
     </div>

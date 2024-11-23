@@ -1,19 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Grid,
-  Box,
-  Input,
-  Button,
-  Card,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-} from "@chakra-ui/react";
-import { MdFileUpload } from "react-icons/md";
-import StudentImage from './StudentImage.tsx'; // Import the StudentImage component
+import { MdFileUpload } from 'react-icons/md';
 
 type Student = {
   id: number;
@@ -30,9 +16,7 @@ type Student = {
 
 export default function Home() {
   const [students, setStudents] = useState<Student[]>([]);
-  const [formData, setFormData] = useState<Student>({
-    id: 0,
-    photo: null,
+  const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     nationality: '',
@@ -40,8 +24,10 @@ export default function Home() {
     certificateId: '',
     course: '',
     results: '',
-    graduationYear: 0,
+    graduationYear: '', // Initialize with an empty string or a default value
+    photo: null,
   });
+
   const [updateId, setUpdateId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -51,67 +37,65 @@ export default function Home() {
   const fetchStudents = async () => {
     try {
       const res = await fetch('/api/students');
-      if (!res.ok) {
-        throw new Error('Failed to fetch students');
-      }
+      console.log('Response status:', res.status);
+      console.log('Response headers:', res.headers);
+
+      if (!res.ok) throw new Error('Failed to fetch students');
       const data = await res.json();
       setStudents(data);
     } catch (error) {
       console.error('Error fetching students:', error);
     }
   };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const addStudent = async () => {
     try {
-      const res = await fetch('/api/students', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      if (!res.ok) {
-        throw new Error('Failed to add student');
-      }
-      const newStudent = await res.json();
-      setStudents([...students, newStudent]);
-      resetForm();
-    } catch (error) {
-      console.error('Error adding student:', error);
-    }
-  };
+      const method = updateId ? 'PUT' : 'POST';
+      const url = updateId ? `/api/students/${updateId}` : '/api/students';
 
-  const updateStudent = async () => {
-    try {
-      const res = await fetch(`/api/students/${updateId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      if (!res.ok) {
-        throw new Error('Failed to update student');
-      }
-      const updatedStudent = await res.json();
-      setStudents(students.map(student => (student.id === updateId ? updatedStudent : student)));
-      resetForm();
-    } catch (error) {
-      console.error('Error updating student:', error);
-    }
-  };
+      const form = new FormData();
+      form.append('firstName', formData.firstName);
+      form.append('lastName', formData.lastName);
+      form.append('nationality', formData.nationality);
+      form.append('studentCode', formData.studentCode);
+      form.append('certificateId', formData.certificateId);
+      form.append('course', formData.course);
+      form.append('results', formData.results);
 
-  const deleteStudent = async (id: number) => {
-    try {
-      const res = await fetch(`/api/students/${id}`, {
-        method: 'DELETE',
-      });
-      if (!res.ok) {
-        throw new Error('Failed to delete student');
+      if (formData.graduationYear) {
+        form.append('graduationYear', formData.graduationYear.toString());
       }
-      setStudents(students.filter(student => student.id !== id));
+
+      if (formData.photo) {
+        form.append('photo', formData.photo); // Append the file here
+      }
+
+      const res = await fetch(url, {
+        method,
+        body: form,
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to save student: ${errorText}`);
+      }
+
+      const savedStudent = await res.json();
+      // Update your state with the saved student
+      if (updateId) {
+        setStudents((prev) =>
+          prev.map((student) =>
+            student.id === updateId ? savedStudent : student,
+          ),
+        );
+      } else {
+        setStudents((prev) => [...prev, savedStudent]);
+      }
+
+      resetForm(); // Reset the form after successful save
     } catch (error) {
-      console.error('Error deleting student:', error);
+      console.error('Error saving student:', error);
     }
   };
 
@@ -126,239 +110,215 @@ export default function Home() {
       certificateId: '',
       course: '',
       results: '',
-      graduationYear: 0,
+      graduationYear: '',
     });
     setUpdateId(null);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setFormData({
-        ...formData,
-        photo: file,
-      });
+  const deleteStudent = async (id: number) => {
+    try {
+      const res = await fetch(`/api/students/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete student');
+      setStudents((prev) => prev.filter((student) => student.id !== id));
+    } catch (error) {
+      console.error('Error deleting student:', error);
     }
   };
 
-  const editStudent = (student: Student) => {
-    setFormData(student);
-    setUpdateId(student.id);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
-  const AddStudents = () => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [nationality, setNationality] = useState('');
-    const [studentCode, setStudentCode] = useState('');
-    const [certificateId, setCertificateId] = useState('');
-    const [course, setCourse] = useState('');
-    const [results, setResults] = useState('');
-    const [graduationYear, setGraduationYear] = useState<number | ''>('');
-    const [photo, setPhoto] = useState<File | null>(null);
-  
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (
-        !firstName ||
-        !lastName ||
-        !nationality ||
-        !studentCode ||
-        !certificateId ||
-        !course ||
-        !results ||
-        !graduationYear ||
-        !photo
-      ) {
-        alert('All fields are required');
-        return;
-      }
-  
-      const formData = new FormData();
-      formData.append('firstName', firstName);
-      formData.append('lastName', lastName);
-      formData.append('nationality', nationality);
-      formData.append('studentCode', studentCode);
-      formData.append('certificateId', certificateId);
-      formData.append('course', course);
-      formData.append('results', results);
-      formData.append('graduationYear', graduationYear.toString()); // Convert to string for form data
-      formData.append('photo', photo);
-  
-      try {
-        const res = await fetch('/api/students', {
-          method: 'POST',
-          body: formData,
-        });
-  
-        if (!res.ok) {
-          throw new Error('Failed to create student');
-        }
-  
-        const newStudent = await res.json();
-        console.log('Student created successfully:', newStudent);
-        // Reset form fields
-        setFirstName('');
-        setLastName('');
-        setNationality('');
-        setStudentCode('');
-        setCertificateId('');
-        setCourse('');
-        setResults('');
-        setGraduationYear('');
-        setPhoto(null);
-      } catch (error) {
-        console.error('Error creating student:', error);
-      }
-    };
-  }  
-  
+
   return (
-    <div className="container mx-auto p-4">
-      
-      <h1 className="text-3xl font-bold mb-4">All Students</h1>
-      <Grid templateColumns="1fr" gap={4}>
-        <Box mb={8}>
-          <Card>
-            <Box p={4}>
-              <form onSubmit={updateId ? updateStudent : addStudent}>
-                <Input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  placeholder="First Name"
-                  required
-                />
-                <Input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  placeholder="Last Name"
-                  required
-                />
-                <Input
-                  type="text"
-                  name="nationality"
-                  value={formData.nationality}
-                  onChange={handleChange}
-                  placeholder="Nationality"
-                  required
-                />
-                <Input
-                  type="text"
-                  name="studentCode"
-                  value={formData.studentCode}
-                  onChange={handleChange}
-                  placeholder="Student Code"
-                  required
-                />
-                <Input
-                  type="text"
-                  name="certificateId"
-                  value={formData.certificateId}
-                  onChange={handleChange}
-                  placeholder="Certificate ID"
-                  required
-                />
-                <Input
-                  type="text"
-                  name="course"
-                  value={formData.course}
-                  onChange={handleChange}
-                  placeholder="Course"
-                  required
-                />
-                <Input
-                  type="text"
-                  name="results"
-                  value={formData.results}
-                  onChange={handleChange}
-                  placeholder="Results"
-                  required
-                />
-                <Input
-                  type="number"
-                  name="graduationYear"
-                  value={formData.graduationYear.toString()}
-                  onChange={handleChange}
-                  placeholder="Graduation Year"
-                  required
-                />
-                <Input
-                  type="file"
-                  onChange={handleFileChange}
-                />
-                <div className="flex flex-col items-center mt-4">
-                  <label htmlFor="file-upload" className="cursor-pointer flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 px-6 py-3 space-x-2 hover:bg-gray-100">
-                    <MdFileUpload className="text-4xl text-blue-600" />
-                    <span className="text-xl font-semibold text-blue-600">Upload Photo</span>
-                  </label>
-                  <input id="file-upload" type="file" className="hidden" onChange={handleFileChange} />
-                </div>
-                <Button type="submit" mt={4} colorScheme="blue" size="lg" width="100%">
-                  {updateId ? 'Update Student' : 'Add Student'}
-                </Button>
-              </form>
-            </Box>
-          </Card>
-        </Box>
-        <Box>
-          <Table variant="simple">
-            <Thead>
-              <Tr>
-                <Th>Photo</Th>
-                <Th>First Name</Th>
-                <Th>Last Name</Th>
-                <Th>Nationality</Th>
-                <Th>Student Code</Th>
-                <Th>Certificate ID</Th>
-                <Th>Course</Th>
-                <Th>Results</Th>
-                <Th>Graduation Year</Th>
-                <Th>Action</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {students.map(student => (
-                <Tr key={student.id}>
-                  <Td>
-                    <StudentImage
-                      photo={student.photo}
-                      firstName={student.firstName}
-                      lastName={student.lastName}
+    <div className="container mx-auto p-6 bg-white dark:bg-[#0b1436]">
+      <h1 className="text-4xl font-bold text-center text-gray-800 dark:text-white mb-8">
+        Student Management
+      </h1>
+
+      {/* Form Section */}
+      <div className="bg-white shadow-md bg-white dark:bg-[#0b1436] rounded-md p-6 mb-8">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
+          <input
+            type="text"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            placeholder="First Name"
+            required
+            className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+          />
+          <input
+            type="text"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            placeholder="Last Name"
+            required
+            className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+          />
+          <input
+            type="text"
+            name="nationality"
+            value={formData.nationality}
+            onChange={handleChange}
+            placeholder="Nationality"
+            required
+            className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+          />
+          <input
+            type="text"
+            name="studentCode"
+            value={formData.studentCode}
+            onChange={handleChange}
+            placeholder="Student Code"
+            required
+            className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+          />
+          <input
+            type="text"
+            name="certificateId"
+            value={formData.certificateId}
+            onChange={handleChange}
+            placeholder="Certificate ID"
+            required
+            className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+          />
+          <input
+            type="text"
+            name="course"
+            value={formData.course}
+            onChange={handleChange}
+            placeholder="Course"
+            required
+            className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+          />
+          <input
+            type="text"
+            name="results"
+            value={formData.results}
+            onChange={handleChange}
+            placeholder="Results"
+            required
+            className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+          />
+          <input
+            type="number"
+            name="graduationYear"
+            value={formData.graduationYear || ''}
+            onChange={handleChange}
+            placeholder="Graduation Year"
+            required
+            className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
+          />
+          <div className="flex items-center space-x-3">
+            <label
+              htmlFor="photo"
+              className="flex items-center justify-center w-full bg-gray-100 dark:bg-gray-800  border-dashed border-2 dark:text-white border-gray-300 dark:border-white-600 rounded-lg p-3 cursor-pointer hover:bg-gray-200"
+            >
+              <MdFileUpload className="text-2xl text-blue-500 dark:text-white mr-2" />
+              <span>Upload Photo</span>
+            </label>
+            <input
+              id="photo"
+              type="file"
+              className="hidden"
+              onChange={(e) =>
+                setFormData({ ...formData, photo: e.target.files?.[0] || null })
+              }
+            />
+          </div>
+          <button
+            type="submit"
+            className="col-span-1 md:col-span-2 bg-blue-500 hover:bg-blue-600 text-white font-bold p-3 rounded-lg"
+          >
+            {updateId ? 'Update Student' : 'Add Student'}
+          </button>
+        </form>
+      </div>
+
+      {/* Table Section */}
+      <div className="bg-white dark:bg-[#0b1436] shadow-md rounded-md overflow-x-auto">
+        <table className="table-auto w-full border-collapse border border-2 dark:bg-[#0b1436] dark-text-white border border-gray-300 text-left">
+          <thead className="bg-gray-100 text-gray-700 dark:bg-[#0b1336] dark:text-white">
+            <tr>
+              <th className="border border-gray-300 p-3">Photo</th>
+              <th className="border border-gray-300 p-3">First Name</th>
+              <th className="border border-gray-300 p-3">Last Name</th>
+              <th className="border border-gray-300 p-3">Nationality</th>
+              <th className="border border-gray-300 p-3">Student Code</th>
+              <th className="border border-gray-300 p-3">Certificate ID</th>
+              <th className="border border-gray-300 p-3">Course</th>
+              <th className="border border-gray-300 p-3">Results</th>
+              <th className="border border-gray-300 p-3">Graduation Year</th>
+              <th className="border border-gray-300 p-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="dark:bg-[#0b1436]  dark:text-white">
+            {students.map((student) => (
+              <tr
+                key={student.id}
+                className="hover:bg-gray-100 dark:hover:bg-[#2d386b]"
+              >
+                <td className="border border-gray-300 p-3">
+                  {student.photo ? (
+                    <img
+                      src={student.photo} // Display the updated or existing photo
+                      alt={`${student.firstName} ${student.lastName}`}
+                      className="h-10 w-10 rounded-full"
                     />
-                  </Td>
-                  <Td>{student.firstName}</Td>
-                  <Td>{student.lastName}</Td>
-                  <Td>{student.nationality}</Td>
-                  <Td>{student.studentCode}</Td>
-                  <Td>{student.certificateId}</Td>
-                  <Td>{student.course}</Td>
-                  <Td>{student.results}</Td>
-                  <Td>{student.graduationYear}</Td>
-                  <Td>
-                    <Button onClick={() => editStudent(student)} size="sm" mr={2}>
-                      Edit
-                    </Button>
-                    <Button onClick={() => deleteStudent(student.id)} size="sm" colorScheme="red">
-                      Delete
-                    </Button>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
-      </Grid>
+                  ) : (
+                    'No Photo'
+                  )}
+                </td>
+
+                <td className="border border-gray-300 p-3">
+                  {student.firstName}
+                </td>
+                <td className="border border-gray-300 p-3">
+                  {student.lastName}
+                </td>
+                <td className="border border-gray-300 p-3">
+                  {student.nationality}
+                </td>
+                <td className="border border-gray-300 p-3">
+                  {student.studentCode}
+                </td>
+                <td className="border border-gray-300 p-3">
+                  {student.certificateId}
+                </td>
+                <td className="border border-gray-300 p-3">{student.course}</td>
+                <td className="border border-gray-300 p-3">
+                  {student.results}
+                </td>
+                <td className="border border-gray-300 p-3">
+                  {student.graduationYear}
+                </td>
+                <td className=" border-gray-300 p-3 flex space-x-2">
+                  <button
+                    onClick={() => {
+                      setFormData(student);
+                      setUpdateId(student.id);
+                    }}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => deleteStudent(student.id)}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
