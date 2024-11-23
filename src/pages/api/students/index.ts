@@ -61,6 +61,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         res.status(500).json({ error: 'Failed to create student' });
       }
     });
+  } else if (req.method === 'GET') {
+    try {
+      // Retrieve all students
+      const students = await prisma.student.findMany();
+
+      res.status(200).json(students);
+    } catch (error) {
+      console.error('Error fetching students:', error);
+      res.status(500).json({ error: 'Failed to fetch students', details: error.message  });
+    }
   } else {
     res.status(405).json({ message: 'Method Not Allowed' });
   }
