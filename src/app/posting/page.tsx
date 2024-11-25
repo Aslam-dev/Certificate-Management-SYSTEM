@@ -74,7 +74,7 @@ export default function Home() {
     formData.append('title', title);
     formData.append('content', content);
     if (image) {
-      formData.append('image', image);
+      formData.append('image', image); // Only append if a new image is provided
     }
 
     try {
@@ -82,9 +82,11 @@ export default function Home() {
         method: 'PUT',
         body: formData,
       });
+
       if (!res.ok) {
         throw new Error('Failed to update post');
       }
+
       const updatedPost = await res.json();
       setPosts(posts.map((post) => (post.id === id ? updatedPost : post)));
       setUpdateId(null);
