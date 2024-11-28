@@ -60,7 +60,7 @@ const CourseForm: React.FC<Props> = ({ onSubmit }) => {
             Start Date
           </label>
           <input
-            type="datetime-local"
+            type="date"
             placeholder="Start Date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
@@ -73,7 +73,7 @@ const CourseForm: React.FC<Props> = ({ onSubmit }) => {
             End Date
           </label>
           <input
-            type="datetime-local"
+            type="date"
             placeholder="End Date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}

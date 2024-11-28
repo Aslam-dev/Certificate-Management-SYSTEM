@@ -14,8 +14,14 @@ type Student = {
   graduationYear: number;
 };
 
+type Course = {
+  id: number;
+  name: string;
+};
+
 export default function Home() {
   const [students, setStudents] = useState<Student[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -24,7 +30,7 @@ export default function Home() {
     certificateId: '',
     course: '',
     results: '',
-    graduationYear: '', // Initialize with an empty string or a default value
+    graduationYear: '',
     photo: null,
   });
 
@@ -32,14 +38,12 @@ export default function Home() {
 
   useEffect(() => {
     fetchStudents();
+    fetchCourses();
   }, []);
 
   const fetchStudents = async () => {
     try {
       const res = await fetch('/api/students');
-      console.log('Response status:', res.status);
-      console.log('Response headers:', res.headers);
-
       if (!res.ok) throw new Error('Failed to fetch students');
       const data = await res.json();
       setStudents(data);
@@ -47,13 +51,23 @@ export default function Home() {
       console.error('Error fetching students:', error);
     }
   };
+
+  const fetchCourses = async () => {
+    try {
+      const res = await fetch('/api/course');
+      if (!res.ok) throw new Error('Failed to fetch courses');
+      const data = await res.json();
+      setCourses(data); // Assuming the response is an array of courses
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       const method = updateId ? 'PUT' : 'POST';
       const url = updateId ? `/api/students/${updateId}` : '/api/students';
-
       const form = new FormData();
       form.append('firstName', formData.firstName);
       form.append('lastName', formData.lastName);
@@ -68,7 +82,7 @@ export default function Home() {
       }
 
       if (formData.photo) {
-        form.append('photo', formData.photo); // Append the file here
+        form.append('photo', formData.photo);
       }
 
       const res = await fetch(url, {
@@ -82,7 +96,6 @@ export default function Home() {
       }
 
       const savedStudent = await res.json();
-      // Update your state with the saved student
       if (updateId) {
         setStudents((prev) =>
           prev.map((student) =>
@@ -93,7 +106,7 @@ export default function Home() {
         setStudents((prev) => [...prev, savedStudent]);
       }
 
-      resetForm(); // Reset the form after successful save
+      resetForm();
     } catch (error) {
       console.error('Error saving student:', error);
     }
@@ -101,8 +114,6 @@ export default function Home() {
 
   const resetForm = () => {
     setFormData({
-      id: 0,
-      photo: null,
       firstName: '',
       lastName: '',
       nationality: '',
@@ -111,6 +122,7 @@ export default function Home() {
       course: '',
       results: '',
       graduationYear: '',
+      photo: null,
     });
     setUpdateId(null);
   };
@@ -125,7 +137,9 @@ export default function Home() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -136,7 +150,6 @@ export default function Home() {
         Student Management
       </h1>
 
-      {/* Form Section */}
       <div className="bg-white shadow-md bg-white dark:bg-[#0b1436] rounded-md p-6 mb-8">
         <form
           onSubmit={handleSubmit}
@@ -151,6 +164,7 @@ export default function Home() {
             required
             className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
           />
+          {/* Other fields */}
           <input
             type="text"
             name="lastName"
@@ -187,15 +201,21 @@ export default function Home() {
             required
             className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
           />
-          <input
-            type="text"
+          <select
             name="course"
             value={formData.course}
             onChange={handleChange}
-            placeholder="Course"
+            className="w-full p-2 rounded-lg border"
             required
-            className="w-full p-2 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600"
-          />
+          >
+            <option value="">Select Course</option>
+            {courses.map((course) => (
+              <option key={course.id} value={course.name}>
+                {course.name}
+              </option>
+            ))}
+          </select>
+
           <input
             type="text"
             name="results"
@@ -231,6 +251,7 @@ export default function Home() {
               }
             />
           </div>
+
           <button
             type="submit"
             className="col-span-1 md:col-span-2 bg-blue-500 hover:bg-blue-600 text-white font-bold p-3 rounded-lg"
@@ -240,7 +261,6 @@ export default function Home() {
         </form>
       </div>
 
-      {/* Table Section */}
       <div className="bg-white dark:bg-[#0b1436] shadow-md rounded-md overflow-x-auto">
         <table className="table-auto w-full border-collapse border border-2 dark:bg-[#0b1436] dark-text-white border border-gray-300 text-left">
           <thead className="bg-gray-100 text-gray-700 dark:bg-[#0b1336] dark:text-white">
