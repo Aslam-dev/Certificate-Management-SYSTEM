@@ -8,7 +8,7 @@ export default function StudentVerification() {
   const [code, setCode] = useState('');
   const [studentData, setStudentData] = useState(null);
   const [error, setError] = useState('');
-  const [showModal, setShowModal] = useState(false); // State to manage modal visibility
+  const [showModal, setShowModal] = useState(false);
 
   const handleInputChange = (e) => {
     setCode(e.target.value);
@@ -36,12 +36,17 @@ export default function StudentVerification() {
       const data = await response.json();
       setStudentData(data);
       setError('');
-      setShowModal(true); // Show modal on success
+      setShowModal(true);
     } catch (error) {
       setError(error.message);
       setStudentData(null);
-      setShowModal(false); // Hide modal on error
+      setShowModal(false);
     }
+  };
+
+  const handleDownload = () => {
+    // Implement PDF download logic using libraries like jsPDF or html2canvas.
+    alert('Download functionality is not implemented yet.');
   };
 
   return (
@@ -60,9 +65,7 @@ export default function StudentVerification() {
                 placeholder="Enter the code"
                 id="code"
                 type="text"
-                value={code}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button
                 type="submit"
@@ -78,56 +81,88 @@ export default function StudentVerification() {
 
       {showModal && studentData && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-10 w-full max-w-lg">
-            <h2 className="text-sm font-semibold mb-4 text-gray-800">
-              Student Information
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 pt-4 gap-4">
-              <div className="col-span-2  text-center ">
-                <img
-                  src={studentData.photo}
-                  alt="Student profile"
-                  className="w-24 h-24 object-cover rounded-full  mx-auto border border-gray-300"
-                />
-                <div>
-                  {' '}
-                  <h2 className="text-xl font-semibold mb-4 mt-4 text-gray-800">
-                    {studentData.firstName} {studentData.lastName}
-                  </h2>
-                </div>
-              </div>
-              <p>
+          <div
+            id="a4-content"
+            className="bg-white rounded-lg shadow-lg p-10 w-[210mm] h-[297mm] overflow-hidden"
+          >
+            <h1 className="text-2xl font-bold mt-4 text-center">Student Information</h1>
+            <div className="text-center mb-4 mt-4">
+              <img
+                src={studentData.photo}
+                alt="Student profile"
+                className="w-24 h-24 object-cover rounded-full mx-auto border border-gray-300"
+              />     
+              <p style={{ fontSize: '1rem', marginLeft:'0.5rem', marginTop:'20px' }} className="text-center text-gray-600">{`${studentData.firstName} ${studentData.lastName}`}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-8 border-t border-gray-300 pt-4 text-sm">
+              <p style={{ marginLeft:'4rem', fontSize:'1.1rem', marginTop:'50px' }}>
                 <strong>First Name:</strong> {studentData.firstName}
               </p>
-              <p>
+              <p style={{ marginLeft:'3rem', fontSize:'1.1rem', marginTop:'50px' }}>
                 <strong>Last Name:</strong> {studentData.lastName}
               </p>
-              <p>
+              <p style={{ marginLeft:'4rem', fontSize:'1.1rem' }}>
                 <strong>Nationality:</strong> {studentData.nationality}
               </p>
-              <p>
+              <p style={{ marginLeft:'3rem', fontSize:'1.1rem' }}>
                 <strong>Student Code:</strong> {studentData.studentCode}
               </p>
-              <p>
+              <p style={{ marginLeft:'4rem', fontSize:'1.1rem' }}>
                 <strong>Certificate ID:</strong> {studentData.certificateId}
               </p>
-              <p>
+              <p style={{ marginLeft:'3rem', fontSize:'1.1rem' }}>
                 <strong>Course:</strong> {studentData.course}
               </p>
-              <p>
-                <strong>Results:</strong> {studentData.results}
+              <p style={{ marginLeft:'4rem', fontSize:'1.1rem' }}>
+                <strong>Result:</strong> {studentData.results}
               </p>
-              <p>
+              <p style={{ marginLeft:'3rem', fontSize:'1.1rem' }}>
                 <strong>Graduation Year:</strong> {studentData.graduationYear}
               </p>
             </div>
-            <div className="text-right mt-4">
+            <div style={{ marginTop:'22rem'}} className="flex justify-left items-left mt-16 border-t border-gray-300 pt-4 text-sm">
+              <img
+                src="/A2zLogo.PNG"
+                alt="Logo"
+                className="w-30 h-20 object-contain mt-0"
+                style={{ marginLeft:'20px'}}
+              />
+            
+            <div style={{ marginLeft:'4rem'}} className="mt-2 text-left text-gray-700 text-sm ">
+              <p style={{ marginLeft:'-30px', marginRight:'0.5rem', fontSize: '0.9rem' }}>
+              CHARTERED TAX INSTITUTE OF MALAYSIA (225750-T)
+              </p>
+              <p style={{ marginLeft:'-30px', marginRight:'0.5rem', fontSize: '0.7rem' }}>
+              B-13-1, Megan Avenue II, No. 12 Jalan Yap Kwan Seng, 50450 Kuala Lumpur
+              </p>
+              <p style={{ marginLeft:'-30px', marginRight:'0.5rem', fontSize: '0.7rem' }}>
+              Tel: 03-2162 8989 | Fax: 03-2162 8990 | Email: examination@ctim.org.my
+              </p>
+            </div>
+            </div>
+            <div className="flex justify-between items-center mt-6">
               <button
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                onClick={() => setShowModal(false)} // Close modal
+                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                onClick={() => setShowModal(false)}
+                style={{marginTop:'10px'}}
               >
-                Close
+                Back
               </button>
+              <div className=" flex-col">
+                <button
+                  className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                  style={{marginTop:'10px', marginRight:'30px'}}
+                  onClick={handleDownload}
+                >
+                  Download
+                </button>
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                  onClick={() => window.print()}
+                >
+                  Print
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -137,3 +172,4 @@ export default function StudentVerification() {
     </>
   );
 }
+
