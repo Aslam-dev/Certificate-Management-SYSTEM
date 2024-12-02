@@ -85,7 +85,7 @@ export default function StudentVerification() {
             id="a4-content"
             className="bg-white rounded-lg shadow-lg p-10 w-[210mm] h-[297mm] overflow-hidden"
           >
-            <h1 className="text-2xl font-bold mt-4 text-center">Student Information</h1>
+            <h1 className="text-2xl font-bold mt-6 text-center">Student Information</h1>
             <div className="text-center mb-4 mt-4">
               <img
                 src={studentData.photo}
